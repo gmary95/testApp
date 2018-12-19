@@ -5,6 +5,7 @@ class ViewController: UIViewController {
     
     var actionCount: Int64 = 0
     var dormitoryArray: [Dormitory] = []
+    var queueArray: [DispatchQueue] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,8 +17,20 @@ class ViewController: UIViewController {
         actionCount = Int64(actionCountTextField.text ?? "0")!
         print(actionCount)
         if actionCount > 0 {
-          let studentArray = Array<Student>(repeating: Student(totalMoney: ModelSettings.initStudentCash, totalBear: ModelSettings.initStudentBeer, buhichedAmount: 0), count: ModelSettings.dormitoryStudentCapacity)
+            let studentArray = Array<Student>(repeating: Student(totalMoney: ModelSettings.initStudentCash, totalBear: ModelSettings.initStudentBeer, buhichedAmount: 0), count: ModelSettings.dormitoryStudentCapacity)
             dormitoryArray = Array<Dormitory>(repeating: Dormitory(studentArray: studentArray), count: ModelSettings.numberOfDormitory)
+            queueArray = []
+            for i in 0 ..< ThreadSettings.threadCount {
+                queueArray.append(DispatchQueue(label: "com.noosphere.testApp.queue#\(i)"))
+            }
+            
+            for i in 0 ..< ThreadSettings.threadCount {
+                queueArray[i].async {
+                    while true {
+                        self.dormitoryArray[0].studentArray[0].sellBeer()
+                    }
+                }
+            }
         }
     }
     

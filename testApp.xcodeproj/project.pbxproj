@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		876EEB1421CA4D900031F936 /* KindRector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876EEB1321CA4D900031F936 /* KindRector.swift */; };
+		876EEB1621CA4DC50031F936 /* EvilRector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876EEB1521CA4DC50031F936 /* EvilRector.swift */; };
 		87D5529321AD32DD0074B070 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D5529221AD32DD0074B070 /* AppDelegate.swift */; };
 		87D5529521AD32DD0074B070 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D5529421AD32DD0074B070 /* ViewController.swift */; };
 		87D5529821AD32DD0074B070 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87D5529621AD32DD0074B070 /* Main.storyboard */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		876EEB1321CA4D900031F936 /* KindRector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindRector.swift; sourceTree = "<group>"; };
+		876EEB1521CA4DC50031F936 /* EvilRector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvilRector.swift; sourceTree = "<group>"; };
 		87D5528F21AD32DD0074B070 /* testApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87D5529221AD32DD0074B070 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		87D5529421AD32DD0074B070 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 				87D552A821AD76080074B070 /* Student.swift */,
 				87D552AA21AD76210074B070 /* Dormitory.swift */,
 				87D552AC21AD766C0074B070 /* Rector.swift */,
+				876EEB1321CA4D900031F936 /* KindRector.swift */,
+				876EEB1521CA4DC50031F936 /* EvilRector.swift */,
 			);
 			path = Enteties;
 			sourceTree = "<group>";
@@ -163,7 +169,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				876EEB1421CA4D900031F936 /* KindRector.swift in Sources */,
 				87D552A621AD4E240074B070 /* Settings.swift in Sources */,
+				876EEB1621CA4DC50031F936 /* EvilRector.swift in Sources */,
 				87D5529521AD32DD0074B070 /* ViewController.swift in Sources */,
 				87D5529321AD32DD0074B070 /* AppDelegate.swift in Sources */,
 				87D552A921AD76080074B070 /* Student.swift in Sources */,

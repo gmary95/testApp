@@ -1,3 +1,3 @@
-struct Rector {
+protocol Rector {
     
 }
