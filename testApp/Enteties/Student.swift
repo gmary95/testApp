@@ -19,5 +19,11 @@ struct Student {
         self.totalMoney -= StudentAmountSettings.costBeer
     }
     
+    mutating func getBeer(amount: Int) {
+        self.totalBear += amount
+    }
     
+    mutating func getMoney(amount: Int) {
+        self.totalMoney += amount
+    }
 }

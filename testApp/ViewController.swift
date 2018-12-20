@@ -25,9 +25,10 @@ class ViewController: UIViewController {
             }
             
             for i in 0 ..< ThreadSettings.threadCount {
-                queueArray[i].async {
-                    while true {
-                        self.dormitoryArray[0].studentArray[0].sellBeer()
+                queueArray[i].async {[weak self] in
+                    for _ in 0 ..< self!.actionCount {
+//                        self.dormitoryArray[0].studentArray[0].sellBeer()
+                        print("\(i)")
                     }
                 }
             }
