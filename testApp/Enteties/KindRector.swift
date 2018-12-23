@@ -1,9 +1,9 @@
-struct KindRector: Rector {
+class KindRector: Rector {
     private var totalMoney: Int
     private var totalBear: Int
-    private var id: Int64
+    private var id: Int
     
-    init(totalMoney: Int, totalBear: Int, id: Int64) {
+    init(totalMoney: Int, totalBear: Int, id: Int) {
         self.totalMoney = totalMoney
         self.totalBear = totalBear
         self.id = id
@@ -13,13 +13,23 @@ struct KindRector: Rector {
         return "KindRector # \(self.id)"
     }
     
-    mutating func donateBeer(student: inout  Student) {
-        self.totalBear -= RectorSettings.giftBeer
-        student.getBeer(amount: RectorSettings.giftBeer)
+    func getBeer() -> Int {
+        return totalBear
     }
     
-    mutating func donateMoney(student: inout  Student) {
+    func getMoney() -> Int {
+        return totalMoney
+    }
+    
+    func donateBeer(student: inout  Student) {
+        self.totalBear -= RectorSettings.giftBeer
+        student.putBeer(amount: RectorSettings.giftBeer)
+        print("\(self.getName()) donate beer \(student.getName())")
+    }
+    
+    func donateMoney(student: inout  Student) {
         self.totalMoney -= RectorSettings.giftCash
-        student.getMoney(amount: RectorSettings.giftCash)
+        student.putMoney(amount: RectorSettings.giftCash)
+        print("\(self.getName()) donate cash \(student.getName())")
     }
 }

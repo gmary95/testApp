@@ -1,8 +1,8 @@
-struct Dormitory: Equatable {
+class Dormitory: Equatable {
     var studentArray: [Student]
-    private var id: Int64
+    private var id: Int
     
-    init(studentArray: [Student], id: Int64) {
+    init(studentArray: [Student], id: Int) {
         self.studentArray = studentArray
         self.id = id
     }
@@ -19,7 +19,7 @@ struct Dormitory: Equatable {
         return lhs.id == rhs.id
     }
     
-    mutating func removeStudent(student: Student) {
+    func removeStudent(student: Student) {
         var i = 0
         studentArray.forEach {
             if $0 == student {
@@ -29,7 +29,7 @@ struct Dormitory: Equatable {
         }
     }
     
-    mutating func addStudent(student: Student) {
+    func addStudent(student: Student) {
         studentArray.append(student)
     }
 }

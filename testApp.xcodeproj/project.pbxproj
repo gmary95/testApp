@@ -18,7 +18,8 @@
 		87D552A921AD76080074B070 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D552A821AD76080074B070 /* Student.swift */; };
 		87D552AB21AD76210074B070 /* Dormitory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D552AA21AD76210074B070 /* Dormitory.swift */; };
 		87D552AD21AD766D0074B070 /* Rector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D552AC21AD766C0074B070 /* Rector.swift */; };
-		87DDFDDB21CCFD9600C20CD6 /* ActionChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DDFDDA21CCFD9600C20CD6 /* ActionChooser.swift */; };
+		87DDFDDB21CCFD9600C20CD6 /* RandomHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87DDFDDA21CCFD9600C20CD6 /* RandomHelper.swift */; };
+		8EBDA7A421D0079E00FB6010 /* Granny.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBDA7A321D0079E00FB6010 /* Granny.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +36,8 @@
 		87D552A821AD76080074B070 /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		87D552AA21AD76210074B070 /* Dormitory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dormitory.swift; sourceTree = "<group>"; };
 		87D552AC21AD766C0074B070 /* Rector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rector.swift; sourceTree = "<group>"; };
-		87DDFDDA21CCFD9600C20CD6 /* ActionChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionChooser.swift; sourceTree = "<group>"; };
+		87DDFDDA21CCFD9600C20CD6 /* RandomHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomHelper.swift; sourceTree = "<group>"; };
+		8EBDA7A321D0079E00FB6010 /* Granny.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Granny.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				87D552A521AD4E240074B070 /* Settings.swift */,
-				87DDFDDA21CCFD9600C20CD6 /* ActionChooser.swift */,
+				87DDFDDA21CCFD9600C20CD6 /* RandomHelper.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -97,6 +99,7 @@
 				87D552AC21AD766C0074B070 /* Rector.swift */,
 				876EEB1321CA4D900031F936 /* KindRector.swift */,
 				876EEB1521CA4DC50031F936 /* EvilRector.swift */,
+				8EBDA7A321D0079E00FB6010 /* Granny.swift */,
 			);
 			path = Enteties;
 			sourceTree = "<group>";
@@ -174,10 +177,11 @@
 			files = (
 				876EEB1421CA4D900031F936 /* KindRector.swift in Sources */,
 				87D552A621AD4E240074B070 /* Settings.swift in Sources */,
+				8EBDA7A421D0079E00FB6010 /* Granny.swift in Sources */,
 				876EEB1621CA4DC50031F936 /* EvilRector.swift in Sources */,
 				87D5529521AD32DD0074B070 /* ViewController.swift in Sources */,
 				87D5529321AD32DD0074B070 /* AppDelegate.swift in Sources */,
-				87DDFDDB21CCFD9600C20CD6 /* ActionChooser.swift in Sources */,
+				87DDFDDB21CCFD9600C20CD6 /* RandomHelper.swift in Sources */,
 				87D552A921AD76080074B070 /* Student.swift in Sources */,
 				87D552AD21AD766D0074B070 /* Rector.swift in Sources */,
 				87D552AB21AD76210074B070 /* Dormitory.swift in Sources */,

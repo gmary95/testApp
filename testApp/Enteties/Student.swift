@@ -1,10 +1,10 @@
-struct Student: Equatable {
+class Student: Equatable {
     private var totalMoney: Int
     private var totalBear: Int
     private var buhichedAmount: Int
-    private var id: Int64
+    private var id: Int
     
-    init(totalMoney: Int, totalBear: Int, buhichedAmount: Int, id: Int64) {
+    init(totalMoney: Int, totalBear: Int, buhichedAmount: Int, id: Int) {
         self.totalMoney = totalMoney
         self.totalBear = totalBear
         self.buhichedAmount = buhichedAmount
@@ -15,22 +15,46 @@ struct Student: Equatable {
         return "Student # \(self.id)"
     }
     
-    mutating func sellBeer() {
+    func getBeer() -> Int {
+        return totalBear
+    }
+    
+    func getMoney() -> Int {
+        return totalMoney
+    }
+    
+    func getBuhichedAmount() -> Int {
+        return buhichedAmount
+    }
+    
+    func drinkBeer(with student: inout Student) {
+        self.totalBear -= StudentAmountSettings.buhichedAmount
+        self.buhichedAmount += StudentAmountSettings.buhichedAmount
+        student.totalBear -= StudentAmountSettings.buhichedAmount
+        student.buhichedAmount += StudentAmountSettings.buhichedAmount
+        print("\(self.getName()) and \(student.getName()) drinking")
+    }
+    
+    func sellBeer() {
         self.totalBear -= StudentAmountSettings.soldBeer
         self.totalMoney += StudentAmountSettings.costBeer
+        print("\(self.getName()) sold beer")
     }
     
-    mutating func buyBeer() {
+    func buyBeer() {
         self.totalBear += StudentAmountSettings.soldBeer
         self.totalMoney -= StudentAmountSettings.costBeer
+        print("\(self.getName()) bougth beer")
     }
     
-    mutating func getBeer(amount: Int) {
+    func putBeer(amount: Int) {
         self.totalBear += amount
+        print("\(self.getName()) get beer from rector")
     }
     
-    mutating func getMoney(amount: Int) {
+    func putMoney(amount: Int) {
         self.totalMoney += amount
+        print("\(self.getName()) get money from rector")
     }
     
     func equalTo(rhs: Student) -> Bool {

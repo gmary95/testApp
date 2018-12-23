@@ -52,6 +52,7 @@
                     </view>
                     <connections>
                         <outlet property="actionCountTextField" destination="aDj-2S-0NV" id="fYk-iR-Ndc"/>
+                        <outlet property="startButton" destination="DXe-CH-RND" id="1HX-oc-v0E"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

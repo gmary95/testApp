@@ -1,5 +1,5 @@
 enum ThreadSettings {
-    static let threadCount: Int = 6
+    static let threadCount: Int = 2//6
 }
 
 enum StudentAmountSettings {

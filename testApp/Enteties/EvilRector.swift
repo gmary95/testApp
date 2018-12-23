@@ -1,7 +1,7 @@
-struct EvilRector: Rector {
-    private var id: Int64
+class EvilRector: Rector {
+    private var id: Int
     
-    init(id: Int64) {
+    init(id: Int) {
         self.id = id
     }
     
@@ -9,7 +9,7 @@ struct EvilRector: Rector {
         return "EvilRector # \(self.id)"
     }
     
-    func swapStudent(dormitories: [Dormitory]) {
+    func swapStudent(dormitories: [Dormitory]) { //TODO: - change id of Student
         if var dormitoryFrom: Dormitory = dormitories.randomElement() {
             var dormitoryTo = dormitoryFrom
             while dormitoryTo == dormitoryFrom {
@@ -20,6 +20,7 @@ struct EvilRector: Rector {
             if let student = dormitoryFrom.studentArray.randomElement() {
                 dormitoryFrom.removeStudent(student: student)
                 dormitoryTo.addStudent(student: student)
+                print("\(self.getName()) swap \(student.getName()) from \(dormitoryFrom.getName()) to \(dormitoryTo.getName())")
             }
         }
     }
