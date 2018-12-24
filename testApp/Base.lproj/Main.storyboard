@@ -19,16 +19,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Mlk-6p-ZQO">
-                                <rect key="frame" x="8" y="285.5" width="359" height="96"/>
+                                <rect key="frame" x="8" y="317" width="359" height="33"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aDj-2S-0NV">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="33"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
-                                    </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DXe-CH-RND">
-                                        <rect key="frame" x="0.0" y="63" width="359" height="33"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="33"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <state key="normal" title="Start">
@@ -51,7 +45,6 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="actionCountTextField" destination="aDj-2S-0NV" id="fYk-iR-Ndc"/>
                         <outlet property="startButton" destination="DXe-CH-RND" id="1HX-oc-v0E"/>
                     </connections>
                 </viewController>

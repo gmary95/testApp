@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		876EEB1421CA4D900031F936 /* KindRector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876EEB1321CA4D900031F936 /* KindRector.swift */; };
 		876EEB1621CA4DC50031F936 /* EvilRector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876EEB1521CA4DC50031F936 /* EvilRector.swift */; };
+		879CF39721D0DAF700696E59 /* QueueHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 879CF39621D0DAF700696E59 /* QueueHelper.swift */; };
+		879CF39921D1208700696E59 /* ExtensionArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 879CF39821D1208700696E59 /* ExtensionArray.swift */; };
+		87B27C2721D12E79006ED5CB /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B27C2621D12E79006ED5CB /* SynchronizedArray.swift */; };
 		87D5529321AD32DD0074B070 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D5529221AD32DD0074B070 /* AppDelegate.swift */; };
 		87D5529521AD32DD0074B070 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D5529421AD32DD0074B070 /* ViewController.swift */; };
 		87D5529821AD32DD0074B070 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87D5529621AD32DD0074B070 /* Main.storyboard */; };
@@ -25,6 +28,9 @@
 /* Begin PBXFileReference section */
 		876EEB1321CA4D900031F936 /* KindRector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KindRector.swift; sourceTree = "<group>"; };
 		876EEB1521CA4DC50031F936 /* EvilRector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EvilRector.swift; sourceTree = "<group>"; };
+		879CF39621D0DAF700696E59 /* QueueHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueHelper.swift; sourceTree = "<group>"; };
+		879CF39821D1208700696E59 /* ExtensionArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionArray.swift; sourceTree = "<group>"; };
+		87B27C2621D12E79006ED5CB /* SynchronizedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		87D5528F21AD32DD0074B070 /* testApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87D5529221AD32DD0074B070 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		87D5529421AD32DD0074B070 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -87,6 +93,9 @@
 			children = (
 				87D552A521AD4E240074B070 /* Settings.swift */,
 				87DDFDDA21CCFD9600C20CD6 /* RandomHelper.swift */,
+				879CF39621D0DAF700696E59 /* QueueHelper.swift */,
+				879CF39821D1208700696E59 /* ExtensionArray.swift */,
+				87B27C2621D12E79006ED5CB /* SynchronizedArray.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -176,15 +185,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				876EEB1421CA4D900031F936 /* KindRector.swift in Sources */,
+				879CF39721D0DAF700696E59 /* QueueHelper.swift in Sources */,
 				87D552A621AD4E240074B070 /* Settings.swift in Sources */,
 				8EBDA7A421D0079E00FB6010 /* Granny.swift in Sources */,
 				876EEB1621CA4DC50031F936 /* EvilRector.swift in Sources */,
 				87D5529521AD32DD0074B070 /* ViewController.swift in Sources */,
+				87B27C2721D12E79006ED5CB /* SynchronizedArray.swift in Sources */,
 				87D5529321AD32DD0074B070 /* AppDelegate.swift in Sources */,
 				87DDFDDB21CCFD9600C20CD6 /* RandomHelper.swift in Sources */,
 				87D552A921AD76080074B070 /* Student.swift in Sources */,
 				87D552AD21AD766D0074B070 /* Rector.swift in Sources */,
 				87D552AB21AD76210074B070 /* Dormitory.swift in Sources */,
+				879CF39921D1208700696E59 /* ExtensionArray.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

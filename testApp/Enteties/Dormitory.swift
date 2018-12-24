@@ -1,8 +1,12 @@
+import Foundation
+
 class Dormitory: Equatable {
-    var studentArray: [Student]
+    var studentArray: SynchronizedArray<Student>
     private var id: Int
     
-    init(studentArray: [Student], id: Int) {
+    private let lock = NSLock()
+    
+    init(studentArray: SynchronizedArray<Student>, id: Int) {
         self.studentArray = studentArray
         self.id = id
     }
@@ -20,12 +24,12 @@ class Dormitory: Equatable {
     }
     
     func removeStudent(student: Student) {
-        var i = 0
-        studentArray.forEach {
-            if $0 == student {
-                self.studentArray.remove(at: i)
-            }
-            i += 1
+        QueueHelper.synchronized(lockable: lock) {
+            studentArray.remove(where: { (elem) -> Bool in
+                return elem == student
+            })
+//            let newArray = studentArray.filter { $0 != student }
+//            studentArray = SynchronizedArray<Student>(newArray)
         }
     }
     

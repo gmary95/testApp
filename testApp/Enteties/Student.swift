@@ -1,8 +1,12 @@
+import Foundation
+
 class Student: Equatable {
     private var totalMoney: Int
     private var totalBear: Int
     private var buhichedAmount: Int
     private var id: Int
+    
+    private let lock = NSLock()
     
     init(totalMoney: Int, totalBear: Int, buhichedAmount: Int, id: Int) {
         self.totalMoney = totalMoney
@@ -28,33 +32,44 @@ class Student: Equatable {
     }
     
     func drinkBeer(with student: inout Student) {
-        self.totalBear -= StudentAmountSettings.buhichedAmount
-        self.buhichedAmount += StudentAmountSettings.buhichedAmount
-        student.totalBear -= StudentAmountSettings.buhichedAmount
-        student.buhichedAmount += StudentAmountSettings.buhichedAmount
-        print("\(self.getName()) and \(student.getName()) drinking")
+        QueueHelper.synchronized(lockable: lock) {
+            self.totalBear -= StudentAmountSettings.buhichedAmount
+            self.buhichedAmount += StudentAmountSettings.buhichedAmount
+            student.totalBear -= StudentAmountSettings.buhichedAmount
+            student.buhichedAmount += StudentAmountSettings.buhichedAmount
+            print("\(self.getName()) (Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName()) (Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) drinking. ")
+        }
+        
     }
     
     func sellBeer() {
-        self.totalBear -= StudentAmountSettings.soldBeer
-        self.totalMoney += StudentAmountSettings.costBeer
-        print("\(self.getName()) sold beer")
+        QueueHelper.synchronized(lockable: lock) {
+            self.totalBear -= StudentAmountSettings.soldBeer
+            self.totalMoney += StudentAmountSettings.costBeer
+            print("\(self.getName()) sold beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+        }
     }
     
     func buyBeer() {
-        self.totalBear += StudentAmountSettings.soldBeer
-        self.totalMoney -= StudentAmountSettings.costBeer
-        print("\(self.getName()) bougth beer")
+        QueueHelper.synchronized(lockable: lock) {
+            self.totalBear += StudentAmountSettings.soldBeer
+            self.totalMoney -= StudentAmountSettings.costBeer
+            print("\(self.getName()) bougth beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+        }
     }
     
     func putBeer(amount: Int) {
-        self.totalBear += amount
-        print("\(self.getName()) get beer from rector")
+        QueueHelper.synchronized(lockable: lock) {
+            self.totalBear += amount
+            print("\(self.getName()) get beer from rector. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+        }
     }
     
     func putMoney(amount: Int) {
-        self.totalMoney += amount
-        print("\(self.getName()) get money from rector")
+        QueueHelper.synchronized(lockable: lock) {
+            self.totalMoney += amount
+            print("\(self.getName()) get money from rector. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+        }
     }
     
     func equalTo(rhs: Student) -> Bool {
