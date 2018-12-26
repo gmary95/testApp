@@ -4,15 +4,17 @@ class Student: Equatable {
     private var totalMoney: Int
     private var totalBear: Int
     private var buhichedAmount: Int
-    private var id: Int
+    var id: Int
     
-    private let lock = NSLock()
+    fileprivate let queue = DispatchQueue(label: "com.noosphere.testApp.SynchronizedStudent", attributes: .concurrent)
     
     init(totalMoney: Int, totalBear: Int, buhichedAmount: Int, id: Int) {
+        QueueHelper.lock.lock()
         self.totalMoney = totalMoney
         self.totalBear = totalBear
         self.buhichedAmount = buhichedAmount
         self.id = id
+        QueueHelper.lock.unlock()
     }
     
     func getName() -> String {
@@ -20,30 +22,40 @@ class Student: Equatable {
     }
     
     func getBeer() -> Int {
-        return totalBear
+        var result: Int = 0
+        queue.sync {
+            result = totalBear
+        }
+        return result
     }
     
     func getMoney() -> Int {
-        return totalMoney
+        var result: Int = 0
+        queue.sync {
+            result = totalMoney
+        }
+        return result
     }
     
     func getBuhichedAmount() -> Int {
-        return buhichedAmount
+        var result: Int = 0
+        queue.sync {
+            result = buhichedAmount
+        }
+        return result
     }
     
-    func drinkBeer(with student: inout Student) {
-        QueueHelper.synchronized(lockable: lock) {
+    func drinkBeer() {
+        queue.async(flags: .barrier) {
             self.totalBear -= StudentAmountSettings.buhichedAmount
             self.buhichedAmount += StudentAmountSettings.buhichedAmount
-            student.totalBear -= StudentAmountSettings.buhichedAmount
-            student.buhichedAmount += StudentAmountSettings.buhichedAmount
-            print("\(self.getName()) (Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName()) (Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) drinking. ")
+            print("\(self.getName()) (Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) drinking. ")
         }
         
     }
     
     func sellBeer() {
-        QueueHelper.synchronized(lockable: lock) {
+        queue.async(flags: .barrier) {
             self.totalBear -= StudentAmountSettings.soldBeer
             self.totalMoney += StudentAmountSettings.costBeer
             print("\(self.getName()) sold beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
@@ -51,7 +63,7 @@ class Student: Equatable {
     }
     
     func buyBeer() {
-        QueueHelper.synchronized(lockable: lock) {
+        queue.async(flags: .barrier) {
             self.totalBear += StudentAmountSettings.soldBeer
             self.totalMoney -= StudentAmountSettings.costBeer
             print("\(self.getName()) bougth beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
@@ -59,14 +71,14 @@ class Student: Equatable {
     }
     
     func putBeer(amount: Int) {
-        QueueHelper.synchronized(lockable: lock) {
+       queue.async(flags: .barrier) {
             self.totalBear += amount
             print("\(self.getName()) get beer from rector. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
         }
     }
     
     func putMoney(amount: Int) {
-        QueueHelper.synchronized(lockable: lock) {
+        queue.async(flags: .barrier) {
             self.totalMoney += amount
             print("\(self.getName()) get money from rector. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
         }

@@ -1,6 +1,7 @@
 import Foundation
 
 class KindRector: Rector {
+    
     private var totalMoney: Int
     private var totalBear: Int
     private var id: Int
@@ -8,9 +9,11 @@ class KindRector: Rector {
     private let lock = NSLock()
     
     init(totalMoney: Int, totalBear: Int, id: Int) {
+        lock.lock()
         self.totalMoney = totalMoney
         self.totalBear = totalBear
         self.id = id
+        lock.unlock()
     }
     
     func getName() -> String {
@@ -25,27 +28,17 @@ class KindRector: Rector {
         return totalMoney
     }
     
-    func donateBeer(dormitoryArray: inout SynchronizedArray<Dormitory>) {
+    func donateBeer() {
         QueueHelper.synchronized(lockable: lock) {
-            if let dormitory: Dormitory = dormitoryArray.randomItem() {
-                if let student = dormitory.studentArray.randomItem() {
-                    self.totalBear -= RectorSettings.giftBeer
-                    student.putBeer(amount: RectorSettings.giftBeer)
-                    print("\(self.getName()) donate beer \(student.getName()). Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
-                }
-            }
+            self.totalBear -= RectorSettings.giftBeer
+            print("\(self.getName()) donate beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
         }
     }
     
-    func donateMoney(dormitoryArray: inout SynchronizedArray<Dormitory>) {
+    func donateMoney() {
         QueueHelper.synchronized(lockable: lock) {
-            if let dormitory: Dormitory = dormitoryArray.randomItem() {
-                if let student = dormitory.studentArray.randomItem() {
-                    self.totalMoney -= RectorSettings.giftCash
-                    student.putMoney(amount: RectorSettings.giftCash)
-                    print("\(self.getName()) donate cash \(student.getName()). Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
-                }
-            }
+            self.totalMoney -= RectorSettings.giftCash
+            print("\(self.getName()) donate cash. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
         }
     }
 }

@@ -1,73 +1,70 @@
 import Foundation
 
 class Granny {
-    private let lock = NSLock()
+    private let lock1 = NSLock()
     
     func calculateBeerAndMoney(dormitories: SynchronizedArray<Dormitory>, kindRector: KindRector) {
-        QueueHelper.synchronized(lockable: lock) {
-            let dormitoriesArray = dormitories
-                .flatMap { $0 }
-            let rector = kindRector
-            //            var sumOfDormitorysBeer = 0
-            //            var sumOfDormitorysMoney = 0
-            //            var sumOfBuhichedBeer = 0
+        QueueHelper.synchronized(lockable: lock1) {
+            print("start")
             
-            //        for i in 0 ..< doZZ
-            //            if let dormitory = dormitoriesArray[i] {
-            //                print(" count \(dormitory.studentArray.count)")
-            //                for j in 0 ..< dormitory.studentArray.count {
-            //                    if let student = dormitory.studentArray[j] {
-            //                        sumOfDormitorysBeer += student.getBeer()
-            //                        sumOfDormitorysMoney += student.getMoney()
-            //                        sumOfBuhichedBeer += student.getBuhichedAmount()
-            //                    }
-            //                }
-            //            }
-            //            }
-            let sumOfDormitorysBeer = dormitoriesArray
-                .map({$0.studentArray.enumerated()
+            let someArray: [[Student]] = dormitories.flatMap{Array<Student>($0.getStudent().flatMap{Student(totalMoney: Int($0.getMoney()), totalBear: Int($0.getBeer()), buhichedAmount: Int($0.getBuhichedAmount()), id: $0.id)})}
+            let rector = KindRector(totalMoney: Int(kindRector.getMoney()), totalBear: Int(kindRector.getBeer()), id: 0)
+            print(Unmanaged.passUnretained(rector).toOpaque())
+            print(Unmanaged.passUnretained(kindRector).toOpaque())
+            
+            print("start calc beer")
+            let sumOfDormitorysBeer = someArray
+                .map({$0.enumerated()
                     .map({ (arg0) -> Int in
                         
                         let (i, elem) = arg0
-                        print(i)
+                        print("\(i) \(elem.id)")
                         return elem.getBeer()
                     })
                 })
                 .compactMap { $0 }
                 .flatMap { $0 }
                 .reduce(0, +)
+            print("stop calc beer \(sumOfDormitorysBeer)")
             
-            let sumOfDormitorysMoney = dormitoriesArray
-                .map({$0.studentArray.enumerated()
+            print("start calc money")
+            let sumOfDormitorysMoney = someArray
+                .map({$0.enumerated()
                     .map({ (arg0) -> Int in
                         
                         let (i, elem) = arg0
-                        print(i)
+                        print("\(i) \(elem.id)")
                         return elem.getMoney()
                     })
                 })
                 .compactMap { $0 }
                 .flatMap { $0 }
                 .reduce(0, +)
+            print("stop calc money \(sumOfDormitorysMoney)")
             
-            let sumOfBuhichedBeer = dormitoriesArray
-                .map({$0.studentArray.enumerated()
+            print("start calc buchich")
+            let sumOfBuhichedBeer = someArray
+                .map({$0.enumerated()
                     .map({ (arg0) -> Int in
                         
                         let (i, elem) = arg0
-                        print(i)
+                        print("\(i) \(elem.id)")
                         return elem.getBuhichedAmount()
                     })
                 })
                 .compactMap { $0 }
                 .flatMap { $0 }
                 .reduce(0, +)
+            print("stop calc buchich \(sumOfBuhichedBeer)")
             
             let sumOfRectorsBeer = rector.getBeer()
+            print("rector beer \(sumOfRectorsBeer)")
             let sumOfRectorsMoney = rector.getMoney()
+            print("rector beer \(sumOfRectorsMoney)")
             
             let sumOfBeer = sumOfDormitorysBeer + sumOfRectorsBeer + sumOfBuhichedBeer
             let sumOfMoney = sumOfDormitorysMoney + sumOfRectorsMoney
+            print("stop")
             
             print("Granny amount of beer = \(sumOfBeer), Amount of money = \(sumOfMoney)")
         }

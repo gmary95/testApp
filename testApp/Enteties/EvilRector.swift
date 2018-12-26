@@ -22,7 +22,7 @@ class EvilRector: Rector {
                         dormitoryTo = dormitory
                     }
                 }
-                if let student = dormitoryFrom.studentArray.randomItem() {
+                if let student = dormitoryFrom.getStudent().randomItem() {
                     dormitoryFrom.removeStudent(student: student)
                     dormitoryTo.addStudent(student: student)
                     print("\(self.getName()) swap \(student.getName()) from \(dormitoryFrom.getName()) to \(dormitoryTo.getName())")

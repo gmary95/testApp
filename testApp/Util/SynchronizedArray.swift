@@ -99,8 +99,10 @@ public extension SynchronizedArray {
     /// - Parameter transform: A closure that accepts an element of this sequence as its argument and returns an optional value.
     /// - Returns: An array of the non-nil results of calling transform with each element of the sequence.
     func flatMap<ElementOfResult>(_ transform: (Element) -> ElementOfResult?) -> [ElementOfResult] {
+        print("flatmap start\(Element.self)")
         var result = [ElementOfResult]()
         queue.sync { result = self.array.flatMap(transform) }
+        print("flatmap stop\(Element.self)")
         return result
     }
     
@@ -147,9 +149,11 @@ public extension SynchronizedArray {
     ///
     /// - Parameter element: The element to append to the array.
     func append( _ element: Element) {
+        print("append start\(Element.self)")
         queue.async(flags: .barrier) {
             self.array.append(element)
         }
+        print("append stop\(Element.self)")
     }
     
     /// Adds a new element at the end of the array.
@@ -193,6 +197,7 @@ public extension SynchronizedArray {
     ///   - predicate: A closure that takes an element of the sequence as its argument and returns a Boolean value indicating whether the element is a match.
     ///   - completion: The handler with the removed element.
     func remove(where predicate: @escaping (Element) -> Bool, completion: ((Element) -> Void)? = nil) {
+        print("remove start\(Element.self)")
         queue.async(flags: .barrier) {
             guard let index = self.array.index(where: predicate) else { return }
             let element = self.array.remove(at: index)
@@ -201,6 +206,7 @@ public extension SynchronizedArray {
                 completion?(element)
             }
         }
+        print("remove stop\(Element.self)")
     }
     
     /// Removes all elements from the array.

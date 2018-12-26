@@ -1,10 +1,10 @@
 import Foundation
 
 class Dormitory: Equatable {
-    var studentArray: SynchronizedArray<Student>
-    private var id: Int
+    private var studentArray: SynchronizedArray<Student>
+    var id: Int
     
-    private let lock = NSLock()
+    fileprivate let queue = DispatchQueue(label: "com.noosphere.testApp.SynchronizedDormitory", attributes: .concurrent)
     
     init(studentArray: SynchronizedArray<Student>, id: Int) {
         self.studentArray = studentArray
@@ -13,6 +13,14 @@ class Dormitory: Equatable {
     
     func getName() -> String {
         return "Dormitory # \(self.id)"
+    }
+    
+    func getStudent() -> SynchronizedArray<Student> {
+        var result = SynchronizedArray<Student>()
+        queue.sync {
+            result = studentArray
+        }
+        return result
     }
     
     func equalTo(rhs: Dormitory) -> Bool {
@@ -24,16 +32,16 @@ class Dormitory: Equatable {
     }
     
     func removeStudent(student: Student) {
-        QueueHelper.synchronized(lockable: lock) {
-            studentArray.remove(where: { (elem) -> Bool in
+        queue.async(flags: .barrier) {
+            self.studentArray.remove(where: { (elem) -> Bool in
                 return elem == student
             })
-//            let newArray = studentArray.filter { $0 != student }
-//            studentArray = SynchronizedArray<Student>(newArray)
         }
     }
     
     func addStudent(student: Student) {
-        studentArray.append(student)
+        queue.async(flags: .barrier) {
+            self.studentArray.append(student)
+        }
     }
 }
