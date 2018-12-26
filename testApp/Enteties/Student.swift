@@ -6,7 +6,7 @@ class Student: Equatable {
     private var buhichedAmount: Int
     var id: Int
     
-    let locker = NSLock()
+    let beerLocker = NSLock()
     let moneyLocker = NSLock()
     
     init(totalMoney: Int, totalBear: Int, buhichedAmount: Int, id: Int) {
@@ -21,10 +21,10 @@ class Student: Equatable {
     }
     
     func getBeer() -> Int {
-        locker.lock()
+        beerLocker.lock()
         var result: Int = 0
         result = totalBear
-        locker.unlock()
+        beerLocker.unlock()
         return result
     }
     
@@ -37,34 +37,34 @@ class Student: Equatable {
     }
     
     func getBuhichedAmount() -> Int {
-        locker.lock()
+        beerLocker.lock()
         var result: Int = 0
         result = buhichedAmount
-        locker.unlock()
+        beerLocker.unlock()
         return result
     }
     
     func drinkBeer(with student: Student) {
-        locker.lock()
-        student.locker.lock()
+        beerLocker.lock()
+        student.beerLocker.lock()
         self.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
         self.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
         
         student.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
         student.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
         print("\(self.getName()) (Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) drinking. ")
-        student.locker.unlock()
-        locker.unlock()
+        student.beerLocker.unlock()
+        beerLocker.unlock()
     }
     
     func sellBeer(to student: Student) {
-        locker.lock()
-        student.locker.lock()
+        beerLocker.lock()
+        student.beerLocker.lock()
         self.totalBear -= StudentAmountSettings.soldBeer
         student.putBeer(amount: StudentAmountSettings.soldBeer)
         print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) swap beer.")
-        student.locker.unlock()
-        locker.unlock()
+        student.beerLocker.unlock()
+        beerLocker.unlock()
 
         
         moneyLocker.lock()
@@ -77,13 +77,13 @@ class Student: Equatable {
     }
     
     func donateBeer(to student: Student) {
-        locker.lock()
-        student.locker.lock()
+        beerLocker.lock()
+        student.beerLocker.lock()
         self.decreaseBeeer(amount: StudentAmountSettings.giftBeer)
         student.putBeer(amount: StudentAmountSettings.giftBeer)
         print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) donate beer.")
-        student.locker.unlock()
-        locker.unlock()
+        student.beerLocker.unlock()
+        beerLocker.unlock()
     }
     
     internal func putBeer(amount: Int) {

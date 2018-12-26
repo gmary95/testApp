@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     let granny = Granny()
     
     let randomHelper = RandomHelper()
-    private let lock = NSLock()
+    private let locker = NSLock()
     let semaphore = DispatchSemaphore(value: 1)
     var isStart = false
     
@@ -63,50 +63,50 @@ class ViewController: UIViewController {
     func chooseAction(on position: Int?) {
         switch position {
         case 1:
-            QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
-                    if let student1 = dormitory.getStudent().randomItem(), let student2 = dormitory.getStudent().randomItem() {
+                    locker.lock()
+                    let studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
+                    locker.unlock()
+                    if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
                         student1.sellBeer(to: student2)
                     }
                 }
-            }
         case 2:
-            QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
-                    if let student1 = dormitory.getStudent().randomItem(), let student2 = dormitory.getStudent().randomItem() {
+                    locker.lock()
+                    let studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
+                    locker.unlock()
+                    if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
                         student1.donateBeer(to: student2)
                     }
-                }
             }
             
         case 3:
-            let lock = NSLock()
-            QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
-                    if let student1 = dormitory.getStudent().randomItem(), let student2 = dormitory.getStudent().randomItem() {
+                    locker.lock()
+                    let studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
+                    locker.unlock()
+                    if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
                         student1.drinkBeer(with: student2)
                     }
                 }
-            }
             
         case 4:
-            QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = dormitoryArray.randomItem() {
                     if let student = dormitory.getStudent().randomItem() {
                         self.kindRector.donateMoney(to: student)
                     }
                 }
-            }
         case 5:
-            QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = dormitoryArray.randomItem() {
                     if let student = dormitory.getStudent().randomItem() {
                         self.kindRector.donateBeer(to: student)
                     }
                 }
-            }
         case 6:
+            locker.lock()
             self.evilRector.swapStudent(dormitories: self.dormitoryArray)
+            locker.unlock()
         case 7:
             semaphore.wait()
             self.granny.calculateBeerAndMoney(dormitories: self.dormitoryArray, kindRector: self.kindRector)

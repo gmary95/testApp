@@ -4,8 +4,6 @@ class Dormitory: Equatable {
     private var studentArray: SynchronizedArray<Student>
     var id: Int
     
-    fileprivate let queue = DispatchQueue(label: "com.noosphere.testApp.SynchronizedDormitory", attributes: .concurrent)
-    
     init(studentArray: SynchronizedArray<Student>, id: Int) {
         self.studentArray = studentArray
         self.id = id
@@ -17,9 +15,7 @@ class Dormitory: Equatable {
     
     func getStudent() -> SynchronizedArray<Student> {
         var result = SynchronizedArray<Student>()
-        queue.sync {
-            result = studentArray
-        }
+        result = studentArray
         return result
     }
     
@@ -32,16 +28,12 @@ class Dormitory: Equatable {
     }
     
     func removeStudent(student: Student) {
-        queue.async(flags: .barrier) {
-            self.studentArray.remove(where: { (elem) -> Bool in
-                return elem == student
-            })
-        }
+        self.studentArray.remove(where: { (elem) -> Bool in
+            return elem == student
+        })
     }
     
     func addStudent(student: Student) {
-        queue.async(flags: .barrier) {
-            self.studentArray.append(student)
-        }
+        self.studentArray.append(student)
     }
 }

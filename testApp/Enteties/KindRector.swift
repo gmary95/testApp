@@ -35,11 +35,11 @@ class KindRector: Rector {
     
     func donateBeer(to student: Student) {
         beerLocker.lock()
-        student.locker.lock()
+        student.beerLocker.lock()
         self.totalBear -= RectorSettings.giftBeer
         student.putBeer(amount: RectorSettings.giftBeer)
         print("\(self.getName()) donate beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
-        student.locker.unlock()
+        student.beerLocker.unlock()
         beerLocker.unlock()
     }
     
