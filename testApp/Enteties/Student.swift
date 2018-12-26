@@ -46,7 +46,10 @@ class Student: Equatable {
     
     func drinkBeer(with student: Student) {
         beerLocker.lock()
-        student.beerLocker.lock()
+        while !student.beerLocker.try() {
+            beerLocker.unlock()
+            beerLocker.lock()
+        }
         self.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
         self.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
         
