@@ -6,14 +6,13 @@ class KindRector: Rector {
     private var totalBear: Int
     private var id: Int
     
-    private let lock = NSLock()
+    private let beerLocker = NSLock()
+    private let moneyLocker = NSLock()
     
     init(totalMoney: Int, totalBear: Int, id: Int) {
-        lock.lock()
         self.totalMoney = totalMoney
         self.totalBear = totalBear
         self.id = id
-        lock.unlock()
     }
     
     func getName() -> String {
@@ -21,24 +20,36 @@ class KindRector: Rector {
     }
     
     func getBeer() -> Int {
-        return totalBear
+        beerLocker.lock()
+        let result = totalBear
+        beerLocker.unlock()
+        return result
     }
     
     func getMoney() -> Int {
-        return totalMoney
+        moneyLocker.lock()
+        let result = totalMoney
+        moneyLocker.unlock()
+        return result
     }
     
-    func donateBeer() {
-        QueueHelper.synchronized(lockable: lock) {
-            self.totalBear -= RectorSettings.giftBeer
-            print("\(self.getName()) donate beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
-        }
+    func donateBeer(to student: Student) {
+        beerLocker.lock()
+        student.locker.lock()
+        self.totalBear -= RectorSettings.giftBeer
+        student.putBeer(amount: RectorSettings.giftBeer)
+        print("\(self.getName()) donate beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+        student.locker.unlock()
+        beerLocker.unlock()
     }
     
-    func donateMoney() {
-        QueueHelper.synchronized(lockable: lock) {
-            self.totalMoney -= RectorSettings.giftCash
-            print("\(self.getName()) donate cash. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
-        }
+    func donateMoney(to student: Student) {
+        moneyLocker.lock()
+        student.moneyLocker.lock()
+        self.totalMoney -= RectorSettings.giftCash
+        student.putMoney(amount: RectorSettings.giftCash)
+        print("\(self.getName()) donate cash. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+        student.moneyLocker.unlock()
+        moneyLocker.unlock()
     }
 }

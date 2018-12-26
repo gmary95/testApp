@@ -1,10 +1,9 @@
 import Foundation
 
 class Granny {
-    private let lock1 = NSLock()
     
     func calculateBeerAndMoney(dormitories: SynchronizedArray<Dormitory>, kindRector: KindRector) {
-        QueueHelper.synchronized(lockable: lock1) {
+        QueueHelper.synchronized(lockable: QueueHelper.lock) {
             print("start")
             
             let someArray: [[Student]] = dormitories.flatMap{Array<Student>($0.getStudent().flatMap{Student(totalMoney: Int($0.getMoney()), totalBear: Int($0.getBeer()), buhichedAmount: Int($0.getBuhichedAmount()), id: $0.id)})}

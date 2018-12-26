@@ -1,6 +1,7 @@
 import Foundation
 
 extension Array {
+    
     func randomItem() -> Element? {
         let lock = NSLock()
         lock.lock()
@@ -10,4 +11,5 @@ extension Array {
         lock.unlock()
         return element
     }
+    
 }

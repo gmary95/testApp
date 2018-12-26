@@ -23,20 +23,8 @@ class ViewController: UIViewController {
         if !isStart {
             startButton.setTitle("Stop", for: .normal)
             isStart = true
-            kindRector = KindRector(totalMoney: ModelSettings.initKindRectorCash, totalBear: ModelSettings.initKindRectorBeer, id: 0)
-            dormitoryArray = SynchronizedArray<Dormitory>()
-            for i in 0 ..< ModelSettings.numberOfDormitory {
-                var studentArray: [Student] = []
-                for j in 0 ..< ModelSettings.dormitoryStudentCapacity {
-                    let idStudent = (i * 10) + j
-                    studentArray += [Student(totalMoney: ModelSettings.initStudentCash, totalBear: ModelSettings.initStudentBeer, buhichedAmount: 0, id: idStudent)]
-                }
-                dormitoryArray += [Dormitory(studentArray: SynchronizedArray<Student>(studentArray), id: i)]
-            }
-            queueArray = []
-            for i in 0 ..< ThreadSettings.threadCount {
-                queueArray.append(DispatchQueue(label: "com.noosphere.testApp.queue#\(i)", attributes: .concurrent))
-            }
+            
+            initializeAllEnteties()
             
             granny.calculateBeerAndMoney(dormitories: dormitoryArray, kindRector: kindRector)
             
@@ -55,50 +43,71 @@ class ViewController: UIViewController {
         }
     }
     
+    func initializeAllEnteties() {
+        kindRector = KindRector(totalMoney: ModelSettings.initKindRectorCash, totalBear: ModelSettings.initKindRectorBeer, id: 0)
+        dormitoryArray = SynchronizedArray<Dormitory>()
+        for i in 0 ..< ModelSettings.numberOfDormitory {
+            var studentArray: [Student] = []
+            for j in 0 ..< ModelSettings.dormitoryStudentCapacity {
+                let idStudent = (i * 10) + j
+                studentArray += [Student(totalMoney: ModelSettings.initStudentCash, totalBear: ModelSettings.initStudentBeer, buhichedAmount: 0, id: idStudent)]
+            }
+            dormitoryArray += [Dormitory(studentArray: SynchronizedArray<Student>(studentArray), id: i)]
+        }
+        queueArray = []
+        for i in 0 ..< ThreadSettings.threadCount {
+            queueArray.append(DispatchQueue(label: "com.noosphere.testApp.queue#\(i)", attributes: .concurrent))
+        }
+    }
+    
     func chooseAction(on position: Int?) {
         switch position {
         case 1:
-            let dormitory: Dormitory? = self.dormitoryArray.randomItem()
             QueueHelper.synchronized(lockable: lock) {
-                if let student = dormitory?.getStudent().randomItem() {
-                    student.sellBeer()
-                }
-            }
-            QueueHelper.synchronized(lockable: lock) {
-                if let student = dormitory?.getStudent().randomItem() {
-                    student.buyBeer()
+                if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
+                    if let student1 = dormitory.getStudent().randomItem(), let student2 = dormitory.getStudent().randomItem() {
+                        student1.sellBeer(to: student2)
+                    }
                 }
             }
         case 2:
             QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
                     if let student1 = dormitory.getStudent().randomItem(), let student2 = dormitory.getStudent().randomItem() {
-                        student1.drinkBeer()
-                        student2.drinkBeer()
+                        student1.donateBeer(to: student2)
                     }
                 }
             }
+            
         case 3:
+            let lock = NSLock()
             QueueHelper.synchronized(lockable: lock) {
-                if let dormitory: Dormitory = dormitoryArray.randomItem() {
-                    if let student = dormitory.getStudent().randomItem() {
-                        self.kindRector.donateMoney()
-                        student.putMoney(amount: RectorSettings.giftCash)
+                if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
+                    if let student1 = dormitory.getStudent().randomItem(), let student2 = dormitory.getStudent().randomItem() {
+                        student1.drinkBeer(with: student2)
                     }
                 }
             }
+            
         case 4:
             QueueHelper.synchronized(lockable: lock) {
                 if let dormitory: Dormitory = dormitoryArray.randomItem() {
                     if let student = dormitory.getStudent().randomItem() {
-                        self.kindRector.donateBeer()
-                        student.putBeer(amount: RectorSettings.giftBeer)
+                        self.kindRector.donateMoney(to: student)
                     }
                 }
             }
         case 5:
-            self.evilRector.swapStudent(dormitories: self.dormitoryArray)
+            QueueHelper.synchronized(lockable: lock) {
+                if let dormitory: Dormitory = dormitoryArray.randomItem() {
+                    if let student = dormitory.getStudent().randomItem() {
+                        self.kindRector.donateBeer(to: student)
+                    }
+                }
+            }
         case 6:
+            self.evilRector.swapStudent(dormitories: self.dormitoryArray)
+        case 7:
             semaphore.wait()
             self.granny.calculateBeerAndMoney(dormitories: self.dormitoryArray, kindRector: self.kindRector)
             semaphore.signal()
