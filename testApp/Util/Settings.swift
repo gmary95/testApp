@@ -1,5 +1,5 @@
 enum ThreadSettings {
-    static let threadCount: Int = 2//6
+    static let threadCount: Int = 6
 }
 
 enum StudentAmountSettings {
@@ -15,7 +15,7 @@ enum RectorSettings {
     static let giftCash: Int = 10
 }
 
-enum ModelSettings {
+enum InitialSettings {
     static let numberOfDormitory: Int = 2
     static let dormitoryStudentCapacity: Int = 3
     static let initStudentBeer: Int = 100

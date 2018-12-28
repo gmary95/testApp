@@ -1,6 +1,6 @@
 import Foundation
 
-class Dormitory: Equatable {
+class Dormitory {
     private var studentArray: SynchronizedArray<Student>
     var id: Int
     
@@ -9,22 +9,9 @@ class Dormitory: Equatable {
         self.id = id
     }
     
-    func getName() -> String {
-        return "Dormitory # \(self.id)"
-    }
-    
     func getStudent() -> SynchronizedArray<Student> {
-        var result = SynchronizedArray<Student>()
-        result = studentArray
-        return result
-    }
-    
-    func equalTo(rhs: Dormitory) -> Bool {
-        return self.id == rhs.id
-    }
-    
-    static func == (lhs: Dormitory, rhs: Dormitory) -> Bool {
-        return lhs.id == rhs.id
+        return studentArray
+
     }
     
     func removeStudent(student: Student) {
@@ -35,5 +22,22 @@ class Dormitory: Equatable {
     
     func addStudent(student: Student) {
         self.studentArray.append(student)
+    }
+}
+
+extension Dormitory: UniversityEntety {
+    func getName() -> String {
+        return "Dormitory # \(self.id)"
+    }
+}
+
+extension Dormitory: Equatable {
+    
+    func equalTo(rhs: Dormitory) -> Bool {
+        return self.id == rhs.id
+    }
+    
+    static func == (lhs: Dormitory, rhs: Dormitory) -> Bool {
+        return lhs.id == rhs.id
     }
 }

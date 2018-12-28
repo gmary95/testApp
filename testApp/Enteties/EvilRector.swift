@@ -7,10 +7,6 @@ class EvilRector: Rector {
         self.id = id
     }
     
-    func getName() -> String {
-        return "EvilRector # \(self.id)"
-    }
-    
     func swapStudent(dormitories: SynchronizedArray<Dormitory>) { //TODO: - change id of Student
         if let dormitoryFrom: Dormitory = dormitories.randomItem() {
             var dormitoryTo = dormitoryFrom
@@ -25,5 +21,11 @@ class EvilRector: Rector {
                 print("\(self.getName()) swap \(student.getName()) from \(dormitoryFrom.getName()) to \(dormitoryTo.getName())")
             }
         }
+    }
+}
+
+extension EvilRector: UniversityEntety {
+    func getName() -> String {
+        return "EvilRector # \(self.id)"
     }
 }

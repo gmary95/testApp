@@ -1,22 +1,46 @@
 import UIKit
+import Foundation
 
 class ViewController: UIViewController {
     @IBOutlet weak var startButton: UIButton!
     
     var actionCount: Int64 = 0
     var dormitoryArray: SynchronizedArray<Dormitory> = SynchronizedArray<Dormitory>()
-    var queueArray: [DispatchQueue] = []
+    var universityLiveQueue: DispatchQueue!
     var kindRector: KindRector!
     let evilRector: EvilRector! = EvilRector(id: 0)
     let granny = Granny()
+    var actions: [() -> Void]!
     
-    let randomHelper = RandomHelper()
-    private let locker = NSLock()
-    let semaphore = DispatchSemaphore(value: 1)
-    var isStart = false
+    private let queue = DispatchQueue(label: "com.noosphere.testApp.syncStudent", attributes: .concurrent)
+    private let randomHelper = RandomHelper()
+    private let dormitoryLocker = NSRecursiveLock()
+    private var isStart = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        actions = [
+        {
+            self.makeSomeActionWithTwoRandomStudentsFromOneDormitory { (student1, student2) in
+                student1.sellBeer(to: student2)
+            }
+            },
+        {
+            self.makeSomeActionWithTwoRandomStudentsFromOneDormitory { (student1, student2) in
+                student1.donateBeer(to: student2)
+            }
+            },
+        {
+            self.makeSomeActionWithTwoRandomStudentsFromOneDormitory { (student1, student2) in
+                student1.drinkBeer(with: student2)
+            }
+            },
+        self.f1(act: self.kindRector.donateMoney),
+        self.f1(act: self.kindRector.donateBeer),
+        self.f2(act: self.evilRector.swapStudent),
+        self.f3
+        ]
     }
     
     @IBAction func startBuhich(_ sender: UIButton) {
@@ -26,94 +50,92 @@ class ViewController: UIViewController {
             
             initializeAllEnteties()
             
-            granny.calculateBeerAndMoney(dormitories: dormitoryArray, kindRector: kindRector)
-            
-            for i in 0 ..< ThreadSettings.threadCount {
-                queueArray[i].async {[weak self] in
+            granny.calculateBeerAndMoney(queueForWorkWithStudent: queue, dormitoryLocker: dormitoryLocker, dormitories: dormitoryArray, kindRector: kindRector)
+            (0 ..< ThreadSettings.threadCount).forEach { _ in
+                universityLiveQueue.async {[weak self] in
                     while self?.isStart == true {
-                        //                    for _ in 0 ..< 10 {
-                        self?.chooseAction(on: self?.randomHelper.getRandomNumber(from: 1 ... 6))
+                        self?.makeRandomAction()
                     }
                 }
             }
         } else {
             startButton.setTitle("Start", for: .normal)
             isStart = false
-            self.chooseAction(on: 6)
+            
+            f3()
         }
     }
     
-    func initializeAllEnteties() {
-        kindRector = KindRector(totalMoney: ModelSettings.initKindRectorCash, totalBear: ModelSettings.initKindRectorBeer, id: 0)
+    private func initializeAllEnteties() {
+        kindRector = KindRector(totalMoney: InitialSettings.initKindRectorCash, totalBear: InitialSettings.initKindRectorBeer, id: 0)
         dormitoryArray = SynchronizedArray<Dormitory>()
-        for i in 0 ..< ModelSettings.numberOfDormitory {
+        for i in 0 ..< InitialSettings.numberOfDormitory {
             var studentArray: [Student] = []
-            for j in 0 ..< ModelSettings.dormitoryStudentCapacity {
+            for j in 0 ..< InitialSettings.dormitoryStudentCapacity {
                 let idStudent = (i * 10) + j
-                studentArray += [Student(totalMoney: ModelSettings.initStudentCash, totalBear: ModelSettings.initStudentBeer, buhichedAmount: 0, id: idStudent)]
+                studentArray += [Student(totalMoney: InitialSettings.initStudentCash, totalBear: InitialSettings.initStudentBeer, buhichedAmount: 0, id: idStudent)]
             }
             dormitoryArray += [Dormitory(studentArray: SynchronizedArray<Student>(studentArray), id: i)]
         }
-        queueArray = []
-        for i in 0 ..< ThreadSettings.threadCount {
-            queueArray.append(DispatchQueue(label: "com.noosphere.testApp.queue#\(i)", attributes: .concurrent))
+        universityLiveQueue = DispatchQueue(label: "com.noosphere.testApp.universityLiveQueue", attributes: .concurrent)
+    }
+    
+    private func makeRandomAction() {
+        if let randomAction = actions.randomItem() {
+            randomAction()
         }
     }
     
-    func chooseAction(on position: Int?) {
-        switch position {
-        case 1:
-                if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
-                    locker.lock()
-                    let studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
-                    locker.unlock()
-                    if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
-                        student1.sellBeer(to: student2)
-                    }
-                }
-        case 2:
-                if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
-                    locker.lock()
-                    let studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
-                    locker.unlock()
-                    if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
-                        student1.donateBeer(to: student2)
-                    }
+    private func makeSomeActionWithTwoRandomStudentsFromOneDormitory(action: @escaping (Student, Student) -> Void) {
+        if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
+            var studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>()
+            QueueHelper.synchronized(lockable: dormitoryLocker) {
+                studentsInDormitory = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
             }
-            
-        case 3:
-                if let dormitory: Dormitory = self.dormitoryArray.randomItem() {
-                    locker.lock()
-                    let studentsInDormitory: SynchronizedArray<Student> = SynchronizedArray<Student>(dormitory.getStudent().flatMap{$0})
-                    locker.unlock()
-                    if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
-                        student1.drinkBeer(with: student2)
-                    }
+            if let student1 = studentsInDormitory.randomItem(), let student2 = studentsInDormitory.randomItem() {
+                queue.sync {
+                    action(student1, student2)
                 }
-            
-        case 4:
-                if let dormitory: Dormitory = dormitoryArray.randomItem() {
-                    if let student = dormitory.getStudent().randomItem() {
-                        self.kindRector.donateMoney(to: student)
-                    }
-                }
-        case 5:
-                if let dormitory: Dormitory = dormitoryArray.randomItem() {
-                    if let student = dormitory.getStudent().randomItem() {
-                        self.kindRector.donateBeer(to: student)
-                    }
-                }
-        case 6:
-            locker.lock()
-            self.evilRector.swapStudent(dormitories: self.dormitoryArray)
-            locker.unlock()
-        case 7:
-            semaphore.wait()
-            self.granny.calculateBeerAndMoney(dormitories: self.dormitoryArray, kindRector: self.kindRector)
-            semaphore.signal()
-        default:
-            break
+            }
         }
+    }
+    
+    private func makeSomeActionWithKindRectorAndrandomStudent(action: (Student) -> Void) {
+        if let dormitory: Dormitory = dormitoryArray.randomItem() {
+            if let student = dormitory.getStudent().randomItem() {
+                queue.sync {
+                    action(student)
+                }
+            }
+        }
+    }
+    
+    private func makeSomeActionWithEvilRectorAndrandomStudent(action: (SynchronizedArray<Dormitory>) -> Void) {
+        QueueHelper.synchronized(lockable: dormitoryLocker) {
+            queue.sync {
+                action(self.dormitoryArray)
+            }
+        }
+    }
+    
+    private func f1(act: @escaping (Student) -> Void) -> (() -> Void) {
+        return {[weak self] in
+            self?.makeSomeActionWithKindRectorAndrandomStudent { (student) in
+                act(student)
+            }
+        }
+    }
+    
+    private func f2(act: @escaping (SynchronizedArray<Dormitory>) -> Void) -> (() -> Void) {
+        return {[weak self] in
+            self?.makeSomeActionWithEvilRectorAndrandomStudent { (dormitoryArray) in
+                act(dormitoryArray)
+            }
+        }
+    }
+    
+    private func f3() {
+        self.granny.calculateBeerAndMoney(queueForWorkWithStudent: queue, dormitoryLocker: self.dormitoryLocker, dormitories: self.dormitoryArray, kindRector: self.kindRector)
     }
 }
 

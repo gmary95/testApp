@@ -1,13 +1,14 @@
 import Foundation
 
-class Student: Equatable {
+class Student {
     private var totalMoney: Int
     private var totalBear: Int
     private var buhichedAmount: Int
+    
     var id: Int
     
-    let beerLocker = NSLock()
-    let moneyLocker = NSLock()
+    let beerLocker = NSRecursiveLock()
+    let moneyLocker = NSRecursiveLock()
     
     init(totalMoney: Int, totalBear: Int, buhichedAmount: Int, id: Int) {
         self.totalMoney = totalMoney
@@ -16,77 +17,56 @@ class Student: Equatable {
         self.id = id
     }
     
-    func getName() -> String {
-        return "Student # \(self.id)"
-    }
-    
     func getBeer() -> Int {
-        beerLocker.lock()
-        var result: Int = 0
-        result = totalBear
-        beerLocker.unlock()
-        return result
+        return QueueHelper.synchronized(lockable: beerLocker) {
+            return totalBear
+        }
     }
     
     func getMoney() -> Int {
-        moneyLocker.lock()
-        var result: Int = 0
-        result = totalMoney
-        moneyLocker.unlock()
-        return result
+        return QueueHelper.synchronized(lockable: beerLocker) {
+            return totalMoney
+        }
     }
     
     func getBuhichedAmount() -> Int {
-        beerLocker.lock()
-        var result: Int = 0
-        result = buhichedAmount
-        beerLocker.unlock()
-        return result
+        return QueueHelper.synchronized(lockable: beerLocker) {
+            return buhichedAmount
+        }
     }
     
     func drinkBeer(with student: Student) {
-        beerLocker.lock()
-        while !student.beerLocker.try() {
-            beerLocker.unlock()
-            beerLocker.lock()
+        QueueHelper.synchronizedWithoutDeadlock(mainLock: beerLocker, secondaryLock: student.beerLocker) {
+            self.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
+            self.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
+            
+            student.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
+            student.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
+            print("\(self.getName()) (Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) drinking. ")
         }
-        self.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
-        self.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
-        
-        student.decreaseBeeer(amount: StudentAmountSettings.buhichedAmount)
-        student.increaseBuhichedBeer(amount: StudentAmountSettings.buhichedAmount)
-        print("\(self.getName()) (Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) drinking. ")
-        student.beerLocker.unlock()
-        beerLocker.unlock()
     }
     
     func sellBeer(to student: Student) {
-        beerLocker.lock()
-        student.beerLocker.lock()
-        self.totalBear -= StudentAmountSettings.soldBeer
-        student.putBeer(amount: StudentAmountSettings.soldBeer)
-        print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) swap beer.")
-        student.beerLocker.unlock()
-        beerLocker.unlock()
-
+        QueueHelper.synchronizedWithoutDeadlock(mainLock: beerLocker, secondaryLock: student.beerLocker) {
+            self.decreaseBeeer(amount: StudentAmountSettings.soldBeer)
+            student.putBeer(amount: StudentAmountSettings.soldBeer)
+            print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) swap beer.")
+        }
         
-        moneyLocker.lock()
-        student.moneyLocker.lock()
-        self.totalMoney += StudentAmountSettings.costBeer
-        student.putMoney(amount: StudentAmountSettings.costBeer)
-        print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) swap money.")
-        student.moneyLocker.unlock()
-        moneyLocker.unlock()
+        
+        QueueHelper.synchronizedWithoutDeadlock(mainLock: moneyLocker, secondaryLock: student.moneyLocker) {
+            self.putMoney(amount: StudentAmountSettings.costBeer)
+            student.decreaseMoney(amount: StudentAmountSettings.costBeer)
+            print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) swap money.")
+        }
     }
     
     func donateBeer(to student: Student) {
-        beerLocker.lock()
-        student.beerLocker.lock()
-        self.decreaseBeeer(amount: StudentAmountSettings.giftBeer)
-        student.putBeer(amount: StudentAmountSettings.giftBeer)
-        print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) donate beer.")
-        student.beerLocker.unlock()
-        beerLocker.unlock()
+        QueueHelper.synchronizedWithoutDeadlock(mainLock: beerLocker, secondaryLock: student.beerLocker) {
+            self.decreaseBeeer(amount: StudentAmountSettings.giftBeer)
+            student.putBeer(amount: StudentAmountSettings.giftBeer)
+            print("\(self.getName())(Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)) and \(student.getName())(Amount of beer = \(student.totalBear), Amount of money = \(student.totalMoney)) donate beer.")
+        }
     }
     
     internal func putBeer(amount: Int) {
@@ -98,7 +78,10 @@ class Student: Equatable {
         self.totalMoney += amount
         print("\(self.getName()) get money from rector. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
     }
-    
+    private func decreaseMoney(amount: Int) {
+        self.totalMoney -= amount
+        print("\(self.getName()) decrease money. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
+    }
     private func decreaseBeeer(amount: Int) {
         self.totalBear -= amount
         print("\(self.getName()) decrease beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
@@ -108,6 +91,15 @@ class Student: Equatable {
         self.buhichedAmount += amount
         print("\(self.getName()) increase buhiched beer. Amount of beer = \(self.totalBear), Amount of money = \(self.totalMoney)")
     }
+}
+
+extension Student: UniversityEntety {
+    func getName() -> String {
+        return "Student # \(self.id)"
+    }
+}
+
+extension Student: Equatable {
     
     func equalTo(rhs: Student) -> Bool {
         return self.id == rhs.id
